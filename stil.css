@@ -1,0 +1,229 @@
+/* stil.css — nur das Aussehen. Farben gemessen an vorlage-turnierbaum-2026-10-12.png. */
+
+:root {
+  --papier: #ffffff;
+  --tinte: #111111;
+  --leise: #6b6b6b;
+  --kopf-grau: #d9d9d9;
+  --rahmen: 3px solid #000;
+  --linie: #000;
+  --wahl: #1a56db;
+  --sieger: #ffd966;
+  /* Vorlage: kräftige Serifenschrift mit normalen (nicht hängenden) Ziffern */
+  --schrift: Cambria, 'Times New Roman', Georgia, serif;
+  --zeile: 1.45em;
+  --blatt-breite: 460px;   /* normale Breite des Seitenblatts; ansicht.js ändert sie beim Ziehen */
+}
+
+/* Farbe je Gruppe — wie auf der Vorlage */
+[data-gruppe="Q1"], [data-gruppe="Q2"] { --farbe: #e6b8af; }
+[data-gruppe="Q3"], [data-gruppe="Q4"] { --farbe: #fce5cd; }
+[data-gruppe="Q5"], [data-gruppe="Q6"] { --farbe: #d9ead3; }
+[data-gruppe="Q7"], [data-gruppe="Q8"] { --farbe: #c9daf8; }
+[data-gruppe="H1"] { --farbe: #d0e0e3; }
+[data-gruppe="H2"] { --farbe: #d9d2e9; }
+[data-gruppe="H3"] { --farbe: #f9cb9c; }
+[data-gruppe="H4"] { --farbe: #ead1dc; }
+[data-gruppe="F1"] { --farbe: #d5a6bd; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--papier);
+  color: var(--tinte);
+  font-family: var(--schrift);
+  font-size: 15px;
+  line-height: 1.35;
+  font-variant-numeric: lining-nums;
+}
+a { color: #0b57d0; }
+button { font: inherit; color: inherit; }
+
+/* ------------------------------------------------------------ Kopf */
+.kopf {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 8px 24px; padding: 16px 24px 10px; border-bottom: 1px solid #e3e3e3;
+}
+.kopf-titel { margin: 0; font-size: 1.5rem; }
+.kopf-zeile { margin: 2px 0 0; color: var(--leise); font-size: .9rem; }
+.modus { margin: 0; font-size: .85rem; color: var(--leise); max-width: 46ch; }
+.modus b { color: var(--tinte); }
+
+.hinweise {
+  margin: 12px 24px 0; padding: 10px 14px; border: 2px solid #b3261e; background: #fdecea;
+  font-size: .9rem;
+}
+.hinweise ul { margin: 4px 0 0; padding-left: 20px; }
+
+.fuss { padding: 10px 24px 18px; color: var(--leise); font-size: .78rem; }
+
+/* ------------------------------------------------------------ Baum, breit */
+/* Die Fläche ist ein Größen-Bezug: Wird sie schmaler (Blatt offen), werden Schrift und Abstände des
+   Baums mit kleiner — der ganze Baum bleibt sichtbar. */
+.flaeche { padding: 16px 24px 8px; container-type: inline-size; }
+.baum {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: auto auto auto;
+  font-size: clamp(11px, calc(0.45cqi + 7px), 15px);
+  column-gap: clamp(6px, 1.6cqi, 34px);
+  row-gap: 68px;
+  max-width: 1760px;
+  margin: 0 auto;
+}
+.linien { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.linien path { stroke: var(--linie); stroke-width: 3; fill: none; }
+
+.runden-titel { display: none; }
+
+/* Plätze wie auf der Vorlage: Q unten, H darüber, F oben, Sieger daneben */
+.gruppe { position: relative; z-index: 1; border: var(--rahmen); background: var(--papier); align-self: start; }
+.gruppe[data-gruppe="F1"] { grid-row: 1; grid-column: 4 / 6; width: 82%; }
+.sieger-kasten { grid-row: 1; grid-column: 6; width: 80%; margin-top: 21px; }
+.gruppe[data-gruppe="H1"] { grid-row: 2; grid-column: 2; }
+.gruppe[data-gruppe="H2"] { grid-row: 2; grid-column: 4; }
+.gruppe[data-gruppe="H3"] { grid-row: 2; grid-column: 5 / 7; width: 58%; justify-self: center; }
+.gruppe[data-gruppe="H4"] { grid-row: 2; grid-column: 7; }
+.gruppe[data-gruppe^="Q"] { grid-row: 3; }
+.gruppe[data-gruppe="Q1"] { grid-column: 1; }
+.gruppe[data-gruppe="Q2"] { grid-column: 2; }
+.gruppe[data-gruppe="Q3"] { grid-column: 3; }
+.gruppe[data-gruppe="Q4"] { grid-column: 4; }
+.gruppe[data-gruppe="Q5"] { grid-column: 5; }
+.gruppe[data-gruppe="Q6"] { grid-column: 6; }
+.gruppe[data-gruppe="Q7"] { grid-column: 7; }
+.gruppe[data-gruppe="Q8"] { grid-column: 8; }
+
+.gruppe-kopf { margin: 0; background: var(--kopf-grau); border-bottom: var(--rahmen); font-size: 1em; }
+.gruppe-knopf {
+  display: block; width: 100%; padding: 1px 4px; border: 0; background: none; cursor: pointer;
+  font-weight: 700; text-align: center;
+}
+.sieger-kasten .gruppe-kopf { text-align: left; padding: 1px 6px; font-weight: 700; }
+
+.zeilen { list-style: none; margin: 0; padding: 0; }
+.zeile {
+  min-height: var(--zeile); display: flex; align-items: center; justify-content: center;
+  text-align: center; border-top: 1px solid #e7e7e7; position: relative;
+}
+.zeile:first-child { border-top: 0; }
+.zeile.weiter { background: var(--farbe); }
+.sieger-kasten .zeile { background: var(--sieger); min-height: 1.6em; }
+
+.name {
+  display: block; width: 100%; padding: 1px 4px; border: 0; background: none; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.name:hover, .gruppe-knopf:hover { text-decoration: underline; }
+.name:focus-visible, .gruppe-knopf:focus-visible, .blatt-zu:focus-visible, .video-start:focus-visible {
+  outline: 3px solid var(--wahl); outline-offset: -3px;
+}
+.herkunft { font-size: .68em; color: var(--leise); margin-right: 4px; letter-spacing: .02em; }
+.offen { color: var(--leise); font-style: italic; }
+.zeile .offen { padding: 1px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* gewählter Teilnehmer: sein Weg durch den Baum */
+.zeile.gewaehlt { box-shadow: inset 0 0 0 3px var(--wahl); font-weight: 700; z-index: 2; }
+.gruppe.gewaehlt-gruppe { outline: 3px solid var(--wahl); outline-offset: 3px; }
+
+/* ------------------------------------------------------------ schmal: Runden untereinander */
+@media (max-width: 1099px) {
+  .flaeche { padding: 12px 16px 8px; }
+  .kopf { padding: 14px 16px 10px; }
+  .hinweise { margin: 12px 16px 0; }
+  .fuss { padding: 10px 16px 18px; }
+  .baum {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+    grid-template-rows: none; row-gap: 14px; column-gap: 14px;
+    font-size: 15px;
+  }
+  .linien { display: none; }
+  .runden-titel { display: block; grid-column: 1 / -1; margin: 14px 0 0; font-size: 1.1rem; }
+  .runden-titel:first-of-type { margin-top: 0; }
+  .baum > .gruppe, .baum > .sieger-kasten {
+    grid-row: auto !important; grid-column: auto !important; width: auto !important;
+    justify-self: stretch !important; margin-top: 0;
+  }
+}
+
+/* ------------------------------------------------------------ Seitenblatt */
+.blatt-hintergrund { position: fixed; inset: 0; background: rgba(0, 0, 0, .25); z-index: 20; }
+/* breit bleibt der Baum sichtbar, damit der hervorgehobene Weg zu sehen ist */
+@media (min-width: 1100px) { .blatt-hintergrund { display: none !important; } }
+/* Ist genug Platz, rückt der Baum zur Seite, damit das Blatt nichts verdeckt (ansicht.js setzt die Klasse,
+   solange dem Baum mindestens 1150 px bleiben). Die Breite des Blatts zieht man am linken Rand. */
+body.baum-rueckt .flaeche { padding-right: calc(var(--blatt-breite) + 24px); }
+.blatt {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 21;
+  width: min(var(--blatt-breite), 100vw); background: var(--papier);
+  border-left: var(--rahmen); box-shadow: -8px 0 24px rgba(0, 0, 0, .15);
+}
+/* Nur der Inhalt scrollt; Griff und Schließen-Knopf bleiben stehen. */
+.blatt-rolle { position: absolute; inset: 0; overflow-y: auto; padding: 18px 22px 28px; }
+.blatt-zu {
+  position: absolute; top: 8px; right: 18px; z-index: 2; width: 40px; height: 40px;
+  border: 2px solid #000; background: var(--papier); font-size: 1.5rem; line-height: 1; cursor: pointer;
+}
+.blatt-griff {
+  position: absolute; top: 0; bottom: 0; left: -9px; width: 14px; z-index: 3;
+  cursor: ew-resize; touch-action: none;
+}
+.blatt-griff::after {
+  content: ''; position: absolute; left: 4px; top: 50%; width: 6px; height: 56px; transform: translateY(-50%);
+  border-radius: 3px; background: #000;
+}
+.blatt-griff:hover, .blatt-griff:focus-visible, body.zieht .blatt-griff { background: rgba(26, 86, 219, .3); outline: none; }
+body.zieht { cursor: ew-resize; user-select: none; }
+/* Beim Ziehen über das Video würde der Spieler die Maus schlucken */
+body.zieht iframe { pointer-events: none; }
+@media (max-width: 1099px) {
+  .blatt { width: min(460px, 100vw); }
+  .blatt-griff { display: none; }
+}
+.blatt-ueber { margin: 0 48px 2px 0; color: var(--leise); font-size: .85rem; }
+.blatt h2 { margin: 0 48px 12px 0; font-size: 1.45rem; overflow-wrap: anywhere; }
+/* Die Überschrift bekommt beim Öffnen den Fokus (für Vorleseprogramme), ohne sichtbaren Rahmen */
+#blatt-titel:focus { outline: none; }
+.blatt h3 { margin: 20px 0 6px; font-size: 1rem; border-bottom: 2px solid #000; padding-bottom: 2px; }
+.angaben { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0; }
+.angaben dt { color: var(--leise); }
+.angaben dd { margin: 0; overflow-wrap: anywhere; }
+.klein { color: var(--leise); font-size: .85rem; }
+.weg { margin: 0; padding-left: 20px; }
+.weg li { margin: 2px 0; }
+.weg .weiter-marke { background: var(--sieger); padding: 0 4px; }
+
+.tabelle { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.tabelle th, .tabelle td { border-bottom: 1px solid #e3e3e3; padding: 3px 4px; text-align: left; }
+.tabelle td.zahl, .tabelle th.zahl { text-align: right; font-variant-numeric: tabular-nums; }
+.tabelle tr.weiter td { background: var(--farbe); }
+.tabelle .name { display: inline; width: auto; padding: 0; text-align: left; text-decoration: underline; }
+
+.video {
+  position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; background: #000;
+  border: 2px solid #000; overflow: hidden;
+}
+.video iframe, .video > div { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-start { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; background: #000; }
+.video img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.play {
+  position: absolute; left: 50%; top: 50%; width: 68px; height: 48px; transform: translate(-50%, -50%);
+  background: #e00; border-radius: 12px;
+}
+.play::after {
+  content: ''; position: absolute; left: 27px; top: 14px;
+  border-style: solid; border-width: 10px 0 10px 17px; border-color: transparent transparent transparent #fff;
+}
+.video-meldung {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; padding: 12px; color: #fff; text-align: center; background: #222;
+}
+.video-meldung a { color: #9ecbff; }
+.video-titel { margin: 6px 0 2px; font-weight: 700; }
+.video-zeile { margin: 0; font-size: .9rem; }
+
+@media (max-width: 520px) {
+  .blatt { border-left: 0; }
+  .blatt-rolle { padding: 16px 16px 24px; }
+}
